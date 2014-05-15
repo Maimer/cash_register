@@ -12,9 +12,9 @@ def print_menu(products, menu)
   menu << "Complete Sale"
 end
 
-# def sale_complete()
+def sale_complete()
 
-# end
+end
 
 def subtotal(product_id, quantity, products)
   this_transaction = products[product_id]["Retail Price"] * quantity
@@ -23,6 +23,7 @@ end
 products = {}
 menu_items = []
 purchases = ["Subtotal,Quantity,Name"]
+subtotal = 0
 
 CSV.foreach('products.csv', headers: true) do |row|
   sku = row["SKU"]
@@ -43,15 +44,16 @@ puts "Make a selection:"
 
 while input = gets.chomp.to_i
   if input == menu_items.length
-    #sale_complete() # ADD THIS METHOD
-    puts purchases
+    sale_complete(purchases)
     break
   else
     puts "\nHow many?"
     quantity = gets.chomp.to_i
     product_id = menu_items[input - 1]
-    purchases << "#{subtotal(product_id, quantity, products)},
-                  #{quantity},#{products[product_id]["Name"]}"
+    subtotal += subtotal(product_id, quantity, products)
+    purchases << [subtotal(product_id, quantity, products),
+                  quantity,
+                  products[product_id]["Name"]]
     puts "\nMake a selection:"
   end
 end
