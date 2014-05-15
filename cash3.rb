@@ -44,14 +44,14 @@ puts "Make a selection:"
 while input = gets.chomp.to_i
   if input == menu_items.length
     #sale_complete() # ADD THIS METHOD
+    puts purchases
     break
   else
     puts "\nHow many?"
     quantity = gets.chomp.to_i
     product_id = menu_items[input - 1]
-    purchases << subtotal(product_id, quantity, products).to_s + ","
-                 quantity.to_s + ","
-                 products[product_id]["Name"]
+    purchases << "#{subtotal(product_id, quantity, products)},
+                  #{quantity},#{products[product_id]["Name"]}"
     puts "\nMake a selection:"
   end
 end
