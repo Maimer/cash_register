@@ -12,8 +12,11 @@ def print_menu(products, menu)
   menu << "Complete Sale"
 end
 
-def sale_complete()
-
+def sale_complete(purchases)
+  puts "===Sale Complete===\n\n"
+  purchases.each do |purchase|
+    puts "$#{'%.2f' % purchase[0]} - #{purchase[1]} #{purchase[2]}"
+  end
 end
 
 def subtotal(product_id, quantity, products)
@@ -22,7 +25,7 @@ end
 
 products = {}
 menu_items = []
-purchases = ["Subtotal,Quantity,Name"]
+purchases = []
 subtotal = 0
 
 CSV.foreach('products.csv', headers: true) do |row|
@@ -45,6 +48,7 @@ puts "Make a selection:"
 while input = gets.chomp.to_i
   if input == menu_items.length
     sale_complete(purchases)
+    puts "\nTotal: $#{'%.2f' % subtotal}\n\n"
     break
   else
     puts "\nHow many?"
