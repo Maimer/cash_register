@@ -15,12 +15,21 @@ end
 def sale_complete(purchases)
   puts "===Sale Complete===\n\n"
   purchases.each do |purchase|
-    puts "$#{'%.2f' % purchase[0]} - #{purchase[1]} #{purchase[2]}"
+    puts "$#{'%.2f' % purchase[1]} - #{purchase[2]} #{purchase[3]}"
   end
 end
 
 def subtotal(product_id, quantity, products)
   this_transaction = products[product_id]["Retail Price"] * quantity
+end
+
+def save_transactions(purchases)
+  File.open("Transactions.csv", 'w') do |row|
+    row.puts "SKU,Name,Quantity,Subtotal"
+    purchases.each do |transaction|
+      row.puts "#{transaction[0]},#{transaction[3]},#{transaction[2]},#{transaction[1]}"
+    end
+  end
 end
 
 products = {}
@@ -55,7 +64,7 @@ while input = gets.chomp.to_i
     quantity = gets.chomp.to_i
     product_id = menu_items[input - 1]
     subtotal += subtotal(product_id, quantity, products)
-    purchases << [subtotal(product_id, quantity, products),
+    purchases << [product_id, subtotal(product_id, quantity, products),
                   quantity,
                   products[product_id]["Name"]]
     puts "\nMake a selection:"
@@ -65,16 +74,15 @@ end
 puts "What is the amount tendered?"
 tendered = gets.chomp.to_f
 
-due = subtotal(items)
-
-if tendered >= due
+if tendered >= subtotal
   puts "\n===Thank You!==="
-  puts "The total change due is $#{'%.2f' % (tendered - due)}"
+  puts "The total change due is $#{'%.2f' % (tendered - subtotal)}"
   puts
   puts DateTime.now.strftime("%m/%d/%Y %I:%M%p")
   puts "================"
+  save_transactions(purchases)
 else
-  puts "WARNING: Customer still owes $#{'%.2f' % due - tendered} Exiting..."
+  puts "WARNING: Customer still owes $#{'%.2f' % subtotal - tendered} Exiting..."
 end
 
 
