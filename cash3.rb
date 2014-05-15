@@ -19,11 +19,13 @@ puts "Welcome to James' Coffee Emporium!\n\n"
 def print_menu(products)
   count = 1
   products.each do |sku, values|
-    puts "#{count}) Add item - #{values["Retail Price"]} - #{values["Name"]}"
+    puts "#{count}) Add item - $#{'%.2f' % values["Retail Price"]} - #{values["Name"]}"
     count += 1
   end
-  puts "#{count}) Complete Sale"
+  puts "#{count}) Complete Sale\n\n"
 end
+
+print_menu(products)
 
 puts "Make a selection:"
 
