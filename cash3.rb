@@ -1,8 +1,28 @@
 require 'date'
 require 'csv'
 
+def print_menu(products, menu)
+  count = 1
+  products.each do |sku, values|
+    puts "#{count}) Add item - $#{'%.2f' % values["Retail Price"]} - #{values["Name"]}"
+    menu << sku
+    count += 1
+  end
+  puts "#{count}) Complete Sale\n\n"
+  menu << "Complete Sale"
+end
+
+# def sale_complete()
+
+# end
+
+def subtotal(product_id, quantity, products)
+  this_transaction = products[product_id]["Retail Price"] * quantity
+end
+
 products = {}
 menu_items = []
+purchases = ["Subtotal,Quantity,Name"]
 
 CSV.foreach('products.csv', headers: true) do |row|
   sku = row["SKU"]
@@ -17,33 +37,29 @@ end
 
 puts "Welcome to James' Coffee Emporium!\n\n"
 
-def print_menu(products, menu)
-  count = 1
-  products.each do |sku, values|
-    puts "#{count}) Add item - $#{'%.2f' % values["Retail Price"]} - #{values["Name"]}"
-    menu << sku
-    count += 1
-  end
-  puts "#{count}) Complete Sale\n\n"
-  menu << "Complete Sale"
-end
-
-print_menu(products)
+print_menu(products, menu_items)
 
 puts "Make a selection:"
 
-while input = gets.chomp
+while input = gets.chomp.to_i
   if input == menu_items.length
-    sale_complete() # ADD THIS METHOD
+    #sale_complete() # ADD THIS METHOD
+    break
   else
-    subtotal() # ADD THIS METHOD
+    puts "\nHow many?"
+    quantity = gets.chomp.to_i
+    product_id = menu_items[input - 1]
+    purchases << subtotal(product_id, quantity, products).to_s + ","
+                 quantity.to_s + ","
+                 products[product_id]["Name"]
+    puts "\nMake a selection:"
   end
 end
 
 puts "What is the amount tendered?"
 tendered = gets.chomp.to_f
 
-due = total(items)
+due = subtotal(items)
 
 if tendered >= due
   puts "\n===Thank You!==="
